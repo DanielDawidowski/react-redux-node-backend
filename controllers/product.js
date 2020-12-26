@@ -10,9 +10,9 @@ exports.create = async (req, res) => {
   } catch (err) {
     console.log(err);
     // res.status(400).send("Create product failed");
-    res.status(400).json({ 
-      err: err.message 
-    })
+    res.status(400).json({
+      err: err.message,
+    });
   }
 };
 
@@ -28,12 +28,20 @@ exports.listAll = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const deleted = await Product.findOneAndRemove({ 
-      slug: req.params.slug
-    }).exac();
-    res.json(deleted)
-  } catch {
-    console.log(err)
-    return res.status(400).send('Product delete failed')
+    const deleted = await Product.findOneAndRemove({
+      slug: req.params.slug,
+    }).exec();
+    res.json(deleted);
+  } catch (err) {
+    console.log(err);
+    return res.staus(400).send("Product delete failed");
   }
+};
+
+exports.read = async (req, res) => {
+  const product = await Product.findOne({ slug: req.params.slug })
+    .populate("category")
+    .populate("subs")
+    .exec();
+  res.json(product);
 };
